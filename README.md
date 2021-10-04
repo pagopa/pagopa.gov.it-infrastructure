@@ -1,6 +1,6 @@
-# terraform-infrastructure-template
+# pagopa.gov.it-infrastructure
 
-Terraform template repository for infrastructures projects
+Terraform template to create resources for the static web site [pagopa.gov.it](https://www.pagopa.gov.it/)
 
 ## Requirements
 

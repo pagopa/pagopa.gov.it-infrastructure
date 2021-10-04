@@ -1,4 +1,4 @@
-plugin "azurerm" {
+plugin "aws" {
   enabled = true
 }
 config {
