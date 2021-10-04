@@ -10,8 +10,9 @@ terraform {
     }
   }
 
+
   required_providers {
-    azurerm = {
+    aws = {
       source  = "hashicorp/aws"
       version = "~> 3.61.0"
     }
@@ -19,7 +20,7 @@ terraform {
 }
 
 provider "aws" {
-  region = "eu-south-1"
+  region = var.region
 }
 
 resource "aws_route53_zone" "main" {

@@ -6,5 +6,5 @@ variable "domain_name" {
 variable "region" {
   type        = string
   description = "AWS region to create resources"
-  default     = "eu-south-1"
+  default     = "eu-central-1"
 }
