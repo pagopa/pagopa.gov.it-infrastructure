@@ -14,17 +14,13 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 3.61.0"
+      version = "~> 3.63.0"
     }
   }
 }
 
 provider "aws" {
   region = var.region
-}
-
-resource "aws_route53_zone" "main" {
-  name = var.domain_name
 }
 
 resource "aws_s3_bucket" "static_bucket" {
@@ -37,6 +33,7 @@ resource "aws_s3_bucket" "static_bucket" {
     index_document = "index.html"
   }
 
+  /*
   policy = <<-EOT
     {
       "Version": "2012-10-17",
@@ -55,6 +52,7 @@ resource "aws_s3_bucket" "static_bucket" {
       ]
     }
   EOT
+  */
 }
 
 
@@ -81,17 +79,37 @@ resource "aws_acm_certificate_validation" "static_bucket_certificate" {
 */
 
 ## CDN ##
+
+resource "aws_cloudfront_origin_access_identity" "access_identity" {
+  comment = "Restrict access to cloud front"
+}
+
+data "aws_iam_policy_document" "s3_policy" {
+  statement {
+    actions   = ["s3:GetObject"]
+    resources = [format("%s/*", aws_s3_bucket.static_bucket.arn)]
+
+    principals {
+      type        = "AWS"
+      identifiers = [aws_cloudfront_origin_access_identity.access_identity.iam_arn]
+    }
+  }
+}
+
+resource "aws_s3_bucket_policy" "bucket_policy" {
+  bucket = aws_s3_bucket.static_bucket.id
+  policy = data.aws_iam_policy_document.s3_policy.json
+}
+
 resource "aws_cloudfront_distribution" "static_bucket_distribution" {
   origin {
-    custom_origin_config {
-      http_port              = "80"
-      https_port             = "443"
-      origin_protocol_policy = "http-only"
-      origin_ssl_protocols   = ["TLSv1", "TLSv1.1", "TLSv1.2"]
-    }
 
-    domain_name = aws_s3_bucket.static_bucket.website_endpoint
+    domain_name = aws_s3_bucket.static_bucket.bucket_regional_domain_name
     origin_id   = var.domain_name
+
+    s3_origin_config {
+      origin_access_identity = aws_cloudfront_origin_access_identity.access_identity.cloudfront_access_identity_path
+    }
   }
 
   enabled             = true
@@ -136,17 +154,7 @@ resource "aws_cloudfront_distribution" "static_bucket_distribution" {
 }
 
 /*
-resource "aws_route53_record" "static_bucket_record" {
-  zone_id = data.aws_route53_zone.static_bucket_zone.zone_id
-  name    = var.domain_name
-  type    = "A"
 
-  alias {
-    name                   = aws_cloudfront_distribution.static_bucket_distribution.domain_name
-    zone_id                = aws_cloudfront_distribution.static_bucket_distribution.hosted_zone_id
-    evaluate_target_health = false
-  }
-}
 
 
 resource "aws_iam_user" "circle_ci_user" {
