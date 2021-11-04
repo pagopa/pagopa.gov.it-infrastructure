@@ -64,14 +64,17 @@ resource "aws_lb" "fe_alb" {
 ## alb listener with redirect
 resource "aws_alb_listener" "front_end" {
   load_balancer_arn = aws_lb.fe_alb.arn
-  port              = "80"
-  protocol          = "HTTP"
+  port              = "443"
+  protocol          = "HTTPS"
+  ssl_policy        = "ELBSecurityPolicy-2016-08"
+  certificate_arn   = aws_acm_certificate.static_bucket_certificate.arn
 
   default_action {
     order = 1
     type  = "redirect"
     redirect {
-      host        = aws_cloudfront_distribution.static_bucket_distribution.domain_name
+      #host        = aws_cloudfront_distribution.static_bucket_distribution.domain_name
+      host        = "www.test.pagopa.gov.it"
       protocol    = "HTTPS"
       status_code = "HTTP_301"
     }
