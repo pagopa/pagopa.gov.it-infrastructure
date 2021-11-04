@@ -57,7 +57,7 @@ resource "aws_s3_bucket" "static_bucket" {
 
 
 resource "aws_acm_certificate" "static_bucket_certificate" {
-  domain_name       = var.domain_name
+  domain_name       = "test.pagopa.gov.it"
   validation_method = "DNS"
 
   tags = {
