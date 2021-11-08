@@ -6,6 +6,14 @@ output "static_bucket_regional_domain_name" {
   value = aws_s3_bucket.static_bucket.bucket_regional_domain_name
 }
 
+output "static_bucket_website_domain" {
+  value = aws_s3_bucket.static_bucket.website_domain
+}
+
+output "static_bucket_website_endpoint" {
+  value = aws_s3_bucket.static_bucket.website_endpoint
+}
+
 output "cdn_static_bucket_arn" {
   value = aws_cloudfront_distribution.static_bucket_distribution.arn
 }
