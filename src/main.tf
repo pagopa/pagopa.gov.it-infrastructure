@@ -59,9 +59,6 @@ resource "aws_acm_certificate" "www_static_bucket_certificate" {
   }
 }
 
-/*
-
-
 
 resource "aws_iam_user" "circle_ci_user" {
   name = "circle-ci"
@@ -91,5 +88,3 @@ resource "aws_iam_user_policy" "circle_ci_policy" {
     }
   EOT
 }
-
-*/
