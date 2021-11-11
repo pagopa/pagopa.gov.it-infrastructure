@@ -15,12 +15,6 @@ resource "aws_cloudfront_distribution" "static_bucket_distribution" {
       origin_protocol_policy = "http-only"
       origin_ssl_protocols   = ["TLSv1", "TLSv1.1", "TLSv1.2"]
     }
-
-    /*
-    s3_origin_config {
-      origin_access_identity = aws_cloudfront_origin_access_identity.access_identity.cloudfront_access_identity_path
-    }
-    */
   }
 
   enabled             = true
@@ -44,7 +38,7 @@ resource "aws_cloudfront_distribution" "static_bucket_distribution" {
     }
   }
 
-  aliases = ["www.test.pagopa.gov.it"]
+  aliases = [format("www.%s", replace(var.domain_name, "-", "."))]
 
   restrictions {
     geo_restriction {
@@ -52,15 +46,11 @@ resource "aws_cloudfront_distribution" "static_bucket_distribution" {
     }
   }
 
-  /*
-  viewer_certificate {
-    cloudfront_default_certificate = true
-  }
-  */
-
   viewer_certificate {
     acm_certificate_arn = aws_acm_certificate.www_static_bucket_certificate.arn
     ssl_support_method  = "sni-only"
   }
+
+  tags = var.tags
 
 }

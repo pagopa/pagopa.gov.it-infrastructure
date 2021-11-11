@@ -59,6 +59,8 @@ resource "aws_lb" "fe_alb" {
   load_balancer_type = "application" # use Application Load Balancer
   security_groups    = [aws_security_group.alb_security_group.id]
   subnets            = module.vpc.public_subnets
+
+  tags = var.tags
 }
 
 ## alb listener with redirect
@@ -79,6 +81,9 @@ resource "aws_alb_listener" "front_end" {
       status_code = "HTTP_301"
     }
   }
+
+  tags = var.tags
+
 }
 
 resource "aws_alb_listener" "http_to_https" {

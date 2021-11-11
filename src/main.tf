@@ -29,39 +29,37 @@ provider "aws" {
 }
 
 resource "aws_acm_certificate" "static_bucket_certificate" {
-  domain_name       = "test.pagopa.gov.it"
+  domain_name       = replace(var.domain_name, "-", ".")
   validation_method = "DNS"
 
   subject_alternative_names = []
 
-  tags = {
-    terraform = "true"
-  }
-
   lifecycle {
     create_before_destroy = true
   }
+
+  tags = var.tags
 }
 
 resource "aws_acm_certificate" "www_static_bucket_certificate" {
-  domain_name       = "www.test.pagopa.gov.it"
+  domain_name       = format("www.%s", replace(var.domain_name, "-", "."))
   provider          = aws.us-east-1
   validation_method = "DNS"
 
   subject_alternative_names = []
 
-  tags = {
-    terraform = "true"
-  }
-
   lifecycle {
     create_before_destroy = true
   }
+
+  tags = var.tags
 }
 
 
 resource "aws_iam_user" "circle_ci_user" {
   name = "circle-ci"
+
+  tags = var.tags
 }
 
 resource "aws_iam_access_key" "circle_ci_access_key" {

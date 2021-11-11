@@ -7,6 +7,8 @@ resource "aws_s3_bucket" "static_bucket" {
   website {
     index_document = "index.html"
   }
+
+  tags = var.tags
 }
 
 data "aws_iam_policy_document" "s3_policy" {
