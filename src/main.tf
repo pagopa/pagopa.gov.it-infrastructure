@@ -81,6 +81,11 @@ resource "aws_iam_user_policy" "circle_ci_policy" {
                   "arn:aws:s3:::${var.domain_name}",
                   "arn:aws:s3:::${var.domain_name}/*"
               ]
+          },
+          {
+              "Action": "cloudfront:CreateInvalidation",
+              "Effect": "Allow",
+              "Resource": "${aws_cloudfront_distribution.static_bucket_distribution.arn}"
           }
       ]
     }
