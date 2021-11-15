@@ -6,7 +6,7 @@ terraform {
     organization = "PagoPa"
 
     workspaces {
-      name = "pagopa-gov-it"
+      prefix = "pagopa-gov-it-"
     }
   }
 
@@ -55,20 +55,21 @@ resource "aws_acm_certificate" "www_static_bucket_certificate" {
   tags = var.tags
 }
 
+data "terraform_remote_state" "shared" {
+  backend = "remote"
 
-resource "aws_iam_user" "circle_ci_user" {
-  name = "circle-ci"
-
-  tags = var.tags
-}
-
-resource "aws_iam_access_key" "circle_ci_access_key" {
-  user = aws_iam_user.circle_ci_user.name
+  config = {
+    hostname     = "app.terraform.io"
+    organization = "PagoPa"
+    workspaces = {
+      name = "pagopa-gov-it-shared"
+    }
+  }
 }
 
 resource "aws_iam_user_policy" "circle_ci_policy" {
-  name = "circle-ci-policy"
-  user = aws_iam_user.circle_ci_user.name
+  name = format("circle-ci-policy-%s", var.domain_name)
+  user = data.terraform_remote_state.shared.outputs.circle_ci_user_name
 
   policy = <<-EOT
     {

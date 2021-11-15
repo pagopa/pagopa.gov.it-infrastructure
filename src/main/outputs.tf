@@ -31,12 +31,3 @@ output "csm_cert_nacked_name" {
 output "csm_cert_www_name" {
   value = aws_acm_certificate.www_static_bucket_certificate.domain_name
 }
-
-output "circle_ci_access_key" {
-  value = aws_iam_access_key.circle_ci_access_key.id
-}
-
-output "circle_ci_access_key_secret" {
-  value     = aws_iam_access_key.circle_ci_access_key.secret
-  sensitive = true
-}
