@@ -54,7 +54,8 @@ resource "aws_acm_certificate" "static_bucket_certificate" {
 }
 
 resource "aws_acm_certificate" "www_static_bucket_certificate" {
-  domain_name       = format("www.%s", replace(var.domain_name, "-", "."))
+  # domain_name       = format("www.%s", replace(var.domain_name, "-", "."))
+  domain_name       = var.env_short == "p" ? "*.pagopa.gov.it" : format("www.%s", replace(var.domain_name, "-", "."))
   provider          = aws.us-east-1
   validation_method = "DNS"
 
