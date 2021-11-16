@@ -40,3 +40,25 @@ resource "aws_iam_user" "circle_ci_user" {
 resource "aws_iam_access_key" "circle_ci_access_key" {
   user = aws_iam_user.circle_ci_user.name
 }
+
+/*
+The cloudfront:CreateInvalidation command does not support resource-level permissions. For this reason, only * is supported. Thus, it is not possible to restrict a user/role to only be able to invalidate a specific distribution.
+Source: http://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/cf-api-permissions-ref.html
+*/
+resource "aws_iam_user_policy" "circle_ci_policy" {
+  name = "circle-ci-policy-cdn"
+  user = aws_iam_user.circle_ci_user.name
+
+  policy = <<-EOT
+    {
+      "Version": "2012-10-17",
+      "Statement": [
+          {
+              "Action": "cloudfront:CreateInvalidation",
+              "Effect": "Allow",
+              "Resource": "*"
+          }
+      ]
+    }
+  EOT
+}

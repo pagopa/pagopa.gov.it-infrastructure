@@ -21,6 +21,7 @@ No modules.
 |------|------|
 | [aws_iam_access_key.circle_ci_access_key](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_access_key) | resource |
 | [aws_iam_user.circle_ci_user](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_user) | resource |
+| [aws_iam_user_policy.circle_ci_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_user_policy) | resource |
 
 ## Inputs
 
@@ -35,3 +36,4 @@ No modules.
 |------|-------------|
 | <a name="output_circle_ci_access_key"></a> [circle\_ci\_access\_key](#output\_circle\_ci\_access\_key) | n/a |
 | <a name="output_circle_ci_access_key_secret"></a> [circle\_ci\_access\_key\_secret](#output\_circle\_ci\_access\_key\_secret) | n/a |
+| <a name="output_circle_ci_user_name"></a> [circle\_ci\_user\_name](#output\_circle\_ci\_user\_name) | n/a |
