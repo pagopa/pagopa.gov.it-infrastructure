@@ -28,6 +28,18 @@ provider "aws" {
   region = "us-east-1"
 }
 
+data "terraform_remote_state" "shared" {
+  backend = "remote"
+
+  config = {
+    hostname     = "app.terraform.io"
+    organization = "PagoPa"
+    workspaces = {
+      name = "pagopa-gov-it-shared"
+    }
+  }
+}
+
 resource "aws_acm_certificate" "static_bucket_certificate" {
   domain_name       = replace(var.domain_name, "-", ".")
   validation_method = "DNS"
@@ -55,20 +67,8 @@ resource "aws_acm_certificate" "www_static_bucket_certificate" {
   tags = var.tags
 }
 
-data "terraform_remote_state" "shared" {
-  backend = "remote"
-
-  config = {
-    hostname     = "app.terraform.io"
-    organization = "PagoPa"
-    workspaces = {
-      name = "pagopa-gov-it-shared"
-    }
-  }
-}
-
 resource "aws_iam_user_policy" "circle_ci_policy" {
-  name = format("circle-ci-policy-%s", var.domain_name)
+  name = format("circle-ci-policy-s3-%s", var.domain_name)
   user = data.terraform_remote_state.shared.outputs.circle_ci_user_name
 
   policy = <<-EOT
@@ -82,12 +82,7 @@ resource "aws_iam_user_policy" "circle_ci_policy" {
                   "arn:aws:s3:::${var.domain_name}",
                   "arn:aws:s3:::${var.domain_name}/*"
               ]
-          },
-          {
-              "Action": "cloudfront:CreateInvalidation",
-              "Effect": "Allow",
-              "Resource": "${aws_cloudfront_distribution.static_bucket_distribution.arn}"
-          }
+          }      
       ]
     }
   EOT

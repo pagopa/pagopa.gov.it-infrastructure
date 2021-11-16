@@ -23,13 +23,6 @@ data "aws_iam_policy_document" "s3_policy" {
   }
 }
 
-/*
-resource "aws_s3_bucket_policy" "bucket_policy" {
-  bucket = aws_s3_bucket.static_bucket.id
-  policy = data.aws_iam_policy_document.s3_policy.json
-}
-*/
-
 # Creates policy to allow public access to the S3 bucket
 resource "aws_s3_bucket_policy" "update_website_root_bucket_policy" {
   bucket = aws_s3_bucket.static_bucket.id
