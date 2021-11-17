@@ -66,7 +66,7 @@ module "budget_alert" {
   env                            = var.tags["Environment"]
   limit_amount                   = "200"
   subscription_endpoint_protocol = "email"
-  subscription_endpoint          = "io-operations@pagopa.it"
+  subscription_endpoint          = "pagopa-alerts@pagopa.it"
   time_period_start              = "2021-11-01_00:00"
   time_period_end                = "2087-01-01_00:00"
   currency                       = "USD" # EUR is not supported :(
