@@ -57,6 +57,7 @@
 
 | Name | Description |
 |------|-------------|
+| <a name="output_alb_"></a> [alb\_](#output\_alb\_) | n/a |
 | <a name="output_cdn_static_bucket_arn"></a> [cdn\_static\_bucket\_arn](#output\_cdn\_static\_bucket\_arn) | n/a |
 | <a name="output_cdn_static_bucket_distribution_id"></a> [cdn\_static\_bucket\_distribution\_id](#output\_cdn\_static\_bucket\_distribution\_id) | n/a |
 | <a name="output_cdn_static_bucket_domain_name"></a> [cdn\_static\_bucket\_domain\_name](#output\_cdn\_static\_bucket\_domain\_name) | n/a |
@@ -64,6 +65,7 @@
 | <a name="output_cert_www_domain_validation_options"></a> [cert\_www\_domain\_validation\_options](#output\_cert\_www\_domain\_validation\_options) | n/a |
 | <a name="output_csm_cert_nacked_name"></a> [csm\_cert\_nacked\_name](#output\_csm\_cert\_nacked\_name) | n/a |
 | <a name="output_csm_cert_www_name"></a> [csm\_cert\_www\_name](#output\_csm\_cert\_www\_name) | n/a |
+| <a name="output_global_accelerator_addresses"></a> [global\_accelerator\_addresses](#output\_global\_accelerator\_addresses) | n/a |
 | <a name="output_static_bucket_arn"></a> [static\_bucket\_arn](#output\_static\_bucket\_arn) | n/a |
 | <a name="output_static_bucket_regional_domain_name"></a> [static\_bucket\_regional\_domain\_name](#output\_static\_bucket\_regional\_domain\_name) | n/a |
 | <a name="output_static_bucket_website_domain"></a> [static\_bucket\_website\_domain](#output\_static\_bucket\_website\_domain) | n/a |

@@ -43,3 +43,11 @@ output "cert_domain_validation_options" {
 output "cert_www_domain_validation_options" {
   value = aws_acm_certificate.www_static_bucket_certificate.domain_validation_options
 }
+
+output "global_accelerator_addresses" {
+  value = aws_globalaccelerator_accelerator.alb_ga.ip_sets[0]["ip_addresses"]
+}
+
+output "alb_" {
+  value = aws_lb.fe_alb.dns_name
+}
