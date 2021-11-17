@@ -1,10 +1,14 @@
+data "aws_availability_zones" "az" {
+  state = "available"
+}
+
 module "vpc" {
   source = "terraform-aws-modules/vpc/aws"
 
-  name = "main-vpc"
+  name = format("main-%s-vpc", var.env_short)
   cidr = "10.0.0.0/16"
 
-  azs             = ["eu-central-1a", "eu-central-1b", "eu-central-1c"]
+  azs             = data.aws_availability_zones.az.names
   private_subnets = []
   public_subnets  = ["10.0.101.0/24", "10.0.102.0/24", "10.0.103.0/24"]
 
@@ -17,7 +21,7 @@ module "vpc" {
 
 resource "aws_security_group" "alb_security_group" {
   vpc_id = module.vpc.vpc_id
-  name   = "alb-nsg"
+  name   = format("alb-%s-nsg", var.env_short)
 
   tags = merge(var.tags, { Name = "alb-nsg" })
 }
@@ -54,7 +58,7 @@ resource "aws_security_group_rule" "alb_allow_all_nsg_rule" {
 
 ## application load balancer
 resource "aws_lb" "fe_alb" {
-  name               = "fe-alb"
+  name               = format("fe-%s-alb", var.env_short)
   internal           = false
   load_balancer_type = "application" # use Application Load Balancer
   security_groups    = [aws_security_group.alb_security_group.id]
@@ -75,8 +79,7 @@ resource "aws_alb_listener" "front_end" {
     order = 2
     type  = "redirect"
     redirect {
-      #host        = aws_cloudfront_distribution.static_bucket_distribution.domain_name
-      host        = "www.test.pagopa.gov.it"
+      host        = format("www.%s", var.domain_name)
       protocol    = "HTTPS"
       status_code = "HTTP_301"
     }
@@ -104,7 +107,7 @@ resource "aws_alb_listener" "http_to_https" {
 
 # global accellerator
 resource "aws_globalaccelerator_accelerator" "alb_ga" {
-  name            = "alb-ga"
+  name            = format("alb-%s-ga", var.env_short)
   ip_address_type = "IPV4"
   enabled         = true
 

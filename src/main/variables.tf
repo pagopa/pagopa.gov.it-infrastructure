@@ -1,3 +1,9 @@
+variable "env_short" {
+  type        = string
+  description = "Short environment identified. eg: d,p,t,u"
+  default     = "d"
+}
+
 variable "domain_name" {
   type        = string
   description = "Website root domain name"
