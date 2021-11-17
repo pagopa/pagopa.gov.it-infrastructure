@@ -23,12 +23,7 @@ provider "aws" {
   region = var.region
 }
 
-/*
-provider "aws" {
-  alias  = "us-east-1"
-  region = "us-east-1"
-}
-*/
+data "aws_caller_identity" "current" {}
 
 
 resource "aws_iam_user" "circle_ci_user" {
@@ -61,4 +56,18 @@ resource "aws_iam_user_policy" "circle_ci_policy" {
       ]
     }
   EOT
+}
+
+# Budget alert
+
+module "budget_alert" {
+  source                         = "hazelops/budget-alert/aws"
+  aws_account_id                 = data.aws_caller_identity.current.account_id
+  env                            = var.tags["Environment"]
+  limit_amount                   = "200"
+  subscription_endpoint_protocol = "email"
+  subscription_endpoint          = "pagopa-alerts@pagopa.it"
+  time_period_start              = "2021-11-01_00:00"
+  time_period_end                = "2087-01-01_00:00"
+  currency                       = "USD" # EUR is not supported :(
 }
