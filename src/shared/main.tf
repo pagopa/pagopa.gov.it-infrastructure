@@ -60,13 +60,21 @@ resource "aws_iam_user_policy" "circle_ci_policy" {
 
 # Budget alert
 
+data "aws_secretsmanager_secret" "slack_io_status" {
+  name = "slack/io-status"
+}
+
+data "aws_secretsmanager_secret_version" "slack_io_status_lt" {
+  secret_id = data.aws_secretsmanager_secret.slack_io_status.id
+}
+
 module "budget_alert" {
   source                         = "hazelops/budget-alert/aws"
   aws_account_id                 = data.aws_caller_identity.current.account_id
   env                            = var.tags["Environment"]
   limit_amount                   = "200"
   subscription_endpoint_protocol = "email"
-  subscription_endpoint          = "pagopa-alerts@pagopa.it"
+  subscription_endpoint          = jsondecode(data.aws_secretsmanager_secret_version.slack_io_status_lt.secret_string)["email"]
   time_period_start              = "2021-11-01_00:00"
   time_period_end                = "2087-01-01_00:00"
   currency                       = "USD" # EUR is not supported :(
