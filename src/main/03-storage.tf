@@ -6,6 +6,9 @@ resource "aws_s3_bucket" "static_bucket" {
 
   website {
     index_document = "index.html"
+    # todo: improvement: set the 404 custom error page as fallback in cloud front.
+    error_document = "404.html"
+
   }
 
   tags = var.tags
