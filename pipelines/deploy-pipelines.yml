@@ -16,6 +16,7 @@ steps:
       terraform -v
       rm terraform_${TERRAFORM_VERSION}_linux_amd64.zip
 - task: AWSShellScript@1
+  displayName: Terraform plan
   inputs:
     awsCredentials: 'AWS Prod'
     regionName: 'eu-south-1'
