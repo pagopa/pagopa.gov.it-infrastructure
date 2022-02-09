@@ -114,9 +114,9 @@ stages:
               steps:
                 - checkout: self
                 # 3. Run terraform apply
-                - template: templates/terraform-aws-apply/template.yaml@terraform
+                - template: templates/terraform-apply/template.yaml@terraform
                   parameters:
-                    CONNECTION: "AWS Uat"
+                    SUBSCRIPTION: "AWS Uat"
                     ENVIRONMENT: uat
 
   # PROD
