@@ -78,7 +78,7 @@ stages:
                 # 3. Run terraform apply
                 - template: templates/terraform-apply/template.yaml@terraform
                   parameters:
-                    CONNECTION: "AWS Dev"
+                    SUBSCRIPTION: "AWS Dev"
                     ENVIRONMENT: dev
 
   # UAT
