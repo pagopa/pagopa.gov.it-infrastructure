@@ -3,8 +3,8 @@ variable "iac" {
     repository = {
       organization    = "pagopa"
       name            = "pagopa.gov.it-infrastructure"
-      branch_name     = "main"
-      pipelines_path  = "pipeline"
+      branch_name     = "refs/heads/main"
+      pipelines_path  = "pipelines"
       yml_prefix_name = null
     }
     pipeline = {
