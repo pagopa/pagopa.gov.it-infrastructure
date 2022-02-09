@@ -1,14 +1,12 @@
 terraform {
   required_version = ">= 1.1.5"
-  # TODO should it be AWS or Azure?
-  /*
-  backend "azurerm" {
-    resource_group_name  = "io-infra-rg"
-    storage_account_name = "ioinfrastterraform"
-    container_name       = "azuredevopsstate"
-    key                  = "cstar-iac-projects.terraform.tfstate"
+
+   backend "s3" {
+    bucket = "terraform-backend-3605"
+    key    = "prod/devops/tfstate"
+    region = "eu-south-1"
   }
-  */
+  
   required_providers {
     azuredevops = {
       source  = "microsoft/azuredevops"
