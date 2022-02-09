@@ -67,9 +67,9 @@ stages:
               steps:
                 - checkout: self
                 # 3. Run terraform apply
-                - template: templates/terraform-apply/template.yaml@terraform
+                - template: templates/terraform-aws-apply/template.yaml@terraform
                   parameters:
-                    SUBSCRIPTION: "AWS Prod"
+                    CONNECTION: "AWS Prod"
                     ENVIRONMENT: dev
 
   # PROD
@@ -107,7 +107,7 @@ stages:
               steps:
                 - checkout: self
                 # 3. Run terraform apply
-                - template: templates/terraform-apply/template.yaml@terraform
+                - template: templates/terraform-aws-apply/template.yaml@terraform
                   parameters:
-                    SUBSCRIPTION: "AWS Prod"
+                    CONNECTION: "AWS Prod"
                     ENVIRONMENT: prod
