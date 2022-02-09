@@ -23,6 +23,6 @@ steps:
     scriptType: 'inline'
     inlineScript: |
       echo "##[section]Start terraform plan "
-      cd src
+      cd src/main
       terraform init
       terraform apply
