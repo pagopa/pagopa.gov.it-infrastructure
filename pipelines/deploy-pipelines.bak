@@ -2,169 +2,26 @@
 trigger: none
 pr: none
 
-parameters:
-  - name: 'DEV'
-    displayName: 'Run on DEV environment'
-    type: boolean
-    default: True
-    values:
-      - False
-      - True
-  - name: 'UAT'
-    displayName: 'Run on UAT environment'
-    type: boolean
-    default: True
-    values:
-      - False
-      - True
-  - name: 'PROD'
-    displayName: 'Run on PROD environment'
-    type: boolean
-    default: True
-    values:
-      - False
-      - True
-
-variables:
-  TIME_OUT: 5
-
-pool:
-  vmImage: 'ubuntu-20.04'
-
-resources:
-  repositories:
-    - repository: terraform
-      type: github
-      name: pagopa/azure-pipeline-templates
-      ref: refs/tags/v17
-      endpoint: 'github-ro'
-
-stages:
-  # DEV
-  - stage: plan_DEV
-    dependsOn: []
-    condition: and(succeeded(), eq(${{parameters.DEV}}, true))
-    pool:
-      name: cstar-dev-linux
-    jobs:
-      - job: plan
-        timeoutInMinutes: $[variables.TIME_OUT]
-        steps:
-          # 1. Install terraform
-          - template: templates/terraform-setup/template.yaml@terraform
-          # 2. Run terraform plan
-          - template: templates/terraform-plan/template.yaml@terraform
-            parameters:
-              SUBSCRIPTION: DEV-CSTAR-SERVICE-CONN
-              ENVIRONMENT: dev
-
-  - stage: apply_DEV
-    dependsOn: [plan_DEV]
-    condition: and(succeeded(), eq(${{parameters.DEV}}, true))
-    pool:
-      name: dev-linux
-    jobs:
-      # - job: init
-      #   steps:
-      #     # 1. Install terraform
-      #     - template: templates/terraform-setup/template.yaml@terraform
-      - deployment: apply
-        continueOnError: false
-        # dependsOn: init
-        environment: 'DEV'
-        strategy:
-          runOnce:
-            deploy:
-              steps:
-                - checkout: self
-                # 3. Run terraform apply
-                - template: templates/terraform-apply/template.yaml@terraform
-                  parameters:
-                    SUBSCRIPTION: DEV-CSTAR-SERVICE-CONN
-                    ENVIRONMENT: dev
-
-  # UAT
-  - stage: plan_UAT
-    dependsOn: []
-    condition: and(succeeded(), eq(${{parameters.UAT}}, true))
-    pool:
-      name: cstar-uat-linux
-    jobs:
-      - job: plan
-        timeoutInMinutes: $[variables.TIME_OUT]
-        steps:
-          # 1. Install terraform
-          - template: templates/terraform-setup/template.yaml@terraform
-          # 2. Run terraform plan
-          - template: templates/terraform-plan/template.yaml@terraform
-            parameters:
-              SUBSCRIPTION: UAT-CSTAR-SERVICE-CONN
-              ENVIRONMENT: uat
-
-  - stage: apply_UAT
-    dependsOn: [plan_UAT]
-    condition: and(succeeded(), eq(${{parameters.UAT}}, true))
-    pool:
-      name: cstar-uat-linux
-    jobs:
-      # - job: init
-      #   steps:
-      #     # 1. Install terraform
-      #     - template: templates/terraform-setup/template.yaml@terraform
-      - deployment: apply
-        continueOnError: false
-        # dependsOn: init
-        environment: 'UAT'
-        strategy:
-          runOnce:
-            deploy:
-              steps:
-                - checkout: self
-                # 3. Run terraform apply
-                - template: templates/terraform-apply/template.yaml@terraform
-                  parameters:
-                    SUBSCRIPTION: UAT-CSTAR-SERVICE-CONN
-                    ENVIRONMENT: uat
-
-  # PROD
-  - stage: plan_PROD
-    dependsOn: []
-    condition: and(succeeded(), eq(${{parameters.PROD}}, true))
-    pool:
-      name: cstar-prod-linux
-    jobs:
-      - job: plan
-        timeoutInMinutes: $[variables.TIME_OUT]
-        steps:
-          # 1. Install terraform
-          - template: templates/terraform-setup/template.yaml@terraform
-          # 2. Run terraform plan
-          - template: templates/terraform-plan/template.yaml@terraform
-            parameters:
-              SUBSCRIPTION: PROD-CSTAR-SERVICE-CONN
-              ENVIRONMENT: prod
-
-  - stage: apply_PROD
-    dependsOn: [plan_PROD]
-    condition: and(succeeded(), eq(${{parameters.PROD}}, true))
-    pool:
-      name: cstar-prod-linux
-    jobs:
-      # - job: init
-      #   steps:
-      #     # 1. Install terraform
-      #     - template: templates/terraform-setup/template.yaml@terraform
-      - deployment: apply
-        continueOnError: false
-        # dependsOn: init
-        environment: 'PROD'
-        strategy:
-          runOnce:
-            deploy:
-              steps:
-                - checkout: self
-                # 3. Run terraform apply
-                - template: templates/terraform-apply/template.yaml@terraform
-                  parameters:
-                    SUBSCRIPTION: PROD-CSTAR-SERVICE-CONN
-                    ENVIRONMENT: prod
+steps:
+- task: Bash@3
+  displayName: Install terraform
+  inputs:
+    targetType: 'inline'
+    failOnStderr: false
+    script: |
+      TERRAFORM_VERSION="$(cat .terraform-version)"
+      wget https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip
+      unzip terraform_${TERRAFORM_VERSION}_linux_amd64.zip
+      sudo mv terraform /usr/local/bin/
+      terraform -v
+      rm terraform_${TERRAFORM_VERSION}_linux_amd64.zip
+- task: AWSShellScript@1
+  inputs:
+    awsCredentials: 'AWS Prod'
+    regionName: 'eu-south-1'
+    scriptType: 'inline'
+    inlineScript: |
+      echo "##[section]Start terraform plan "
+      cd src/main
+      ./terraform.sh init prod
+      ./terraform.sh plan prod
