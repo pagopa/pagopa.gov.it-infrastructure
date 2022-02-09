@@ -1,14 +1,7 @@
 terraform {
   required_version = ">= 1.0.0"
 
-  backend "remote" {
-    hostname     = "app.terraform.io"
-    organization = "PagoPa"
-
-    workspaces {
-      name = "pagopa-gov-it-shared"
-    }
-  }
+  backend "s3" {}
 
 
   required_providers {
