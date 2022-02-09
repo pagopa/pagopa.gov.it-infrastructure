@@ -52,8 +52,6 @@ stages:
   - stage: apply_DEV
     dependsOn: [plan_DEV]
     condition: and(succeeded(), eq(${{parameters.DEV}}, true))
-    pool:
-      name: dev-linux
     jobs:
       # - job: init
       #   steps:
