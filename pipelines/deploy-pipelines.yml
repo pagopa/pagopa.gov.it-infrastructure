@@ -24,5 +24,4 @@ steps:
       echo "##[section]Start terraform plan "
       cd src/main
       ./terraform.sh init prod
-      ./terraform.sh validate prod
       ./terraform.sh plan prod
