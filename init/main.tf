@@ -18,7 +18,7 @@ resource "random_integer" "bucket_suffix" {
   max = 9999
 }
 resource "aws_s3_bucket" "terraform-state-storage-s3" {
-  bucket = format("terraform-backend-%4f", random_integer.bucket_suffix.result)
+  bucket = format("terraform-backend-%04s", random_integer.bucket_suffix.result)
 
 
   versioning {
@@ -27,7 +27,7 @@ resource "aws_s3_bucket" "terraform-state-storage-s3" {
   }
 
   lifecycle {
-    prevent_destroy = true
+    # prevent_destroy = true
   }
 
   tags = merge(local.tags, {
