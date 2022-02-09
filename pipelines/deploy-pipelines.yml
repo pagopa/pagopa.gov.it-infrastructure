@@ -2,6 +2,7 @@
 trigger: none
 pr: none
 
+steps:
 - task: AWSShellScript@1
   inputs:
     awsCredentials: 'AWS Prod'
