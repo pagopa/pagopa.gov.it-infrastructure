@@ -24,4 +24,5 @@ steps:
       echo "##[section]Start terraform plan "
       cd src/main
       terraform init
-      terraform apply
+      terraform validate
+      terraform plan
