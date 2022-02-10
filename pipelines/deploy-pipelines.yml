@@ -10,13 +10,6 @@ parameters:
     values:
       - False
       - True
-  - name: 'UAT'
-    displayName: 'Run on UAT environment'
-    type: boolean
-    default: True
-    values:
-      - False
-      - True
   - name: 'PROD'
     displayName: 'Run on PROD environment'
     type: boolean
@@ -36,7 +29,7 @@ resources:
     - repository: terraform
       type: github
       name: pagopa/azure-pipeline-templates
-      ref: refs/terraform-aws
+      ref: refs/heads/terraform-aws
       endpoint: 'github-ro'
 
 stages:
@@ -53,14 +46,13 @@ stages:
           # 2. Run terraform plan
           - template: templates/terraform-aws-plan/template.yaml@terraform
             parameters:
-              CONNECTION: "AWS Dev"
+              CONNECTION: "AWS Prod"
               ENVIRONMENT: dev
+              WORKINGDIR: "src/main"
 
   - stage: apply_DEV
     dependsOn: [plan_DEV]
     condition: and(succeeded(), eq(${{parameters.DEV}}, true))
-    pool:
-      name: dev-linux
     jobs:
       # - job: init
       #   steps:
@@ -76,48 +68,11 @@ stages:
               steps:
                 - checkout: self
                 # 3. Run terraform apply
-                - template: templates/terraform-apply/template.yaml@terraform
-                  parameters:
-                    CONNECTION: "AWS Dev"
-                    ENVIRONMENT: dev
-
-  # UAT
-  - stage: plan_UAT
-    dependsOn: []
-    condition: and(succeeded(), eq(${{parameters.UAT}}, true))
-    jobs:
-      - job: plan
-        timeoutInMinutes: $[variables.TIME_OUT]
-        steps:
-          # 1. Install terraform
-          - template: templates/terraform-setup/template.yaml@terraform
-          # 2. Run terraform plan
-          - template: templates/terraform-aws-plan/template.yaml@terraform
-            parameters:
-              CONNECTION: "AWS Uat"
-              ENVIRONMENT: uat
-
-  - stage: apply_UAT
-    dependsOn: [plan_UAT]
-    condition: and(succeeded(), eq(${{parameters.UAT}}, true))
-    jobs:
-      # - job: init
-      #   steps:
-      #     # 1. Install terraform
-      #     - template: templates/terraform-setup/template.yaml@terraform
-      - deployment: apply
-        continueOnError: false
-        environment: 'UAT'
-        strategy:
-          runOnce:
-            deploy:
-              steps:
-                - checkout: self
-                # 3. Run terraform apply
                 - template: templates/terraform-aws-apply/template.yaml@terraform
                   parameters:
-                    CONNECTION: "AWS Uat"
-                    ENVIRONMENT: uat
+                    CONNECTION: "AWS Prod"
+                    ENVIRONMENT: dev
+                    WORKINGDIR: "src/main"
 
   # PROD
   - stage: plan_PROD
@@ -135,6 +90,7 @@ stages:
             parameters:
               CONNECTION: "AWS Prod"
               ENVIRONMENT: prod
+              WORKINGDIR: "src/main"
 
   - stage: apply_PROD
     dependsOn: [plan_PROD]
@@ -158,3 +114,4 @@ stages:
                   parameters:
                     CONNECTION: "AWS Prod"
                     ENVIRONMENT: prod
+                    WORKINGDIR: "src/main"
