@@ -15,7 +15,7 @@ variable "iac" {
 }
 
 module "iac_deploy" {
-  source = "./modules/azuredevops_build_definition_deploy"
+  source = "git::https://github.com/pagopa/azuredevops-tf-modules.git//azuredevops_build_definition_deploy?ref=v2.0.5"
 
   project_id                   = azuredevops_project.this.id
   repository                   = var.iac.repository

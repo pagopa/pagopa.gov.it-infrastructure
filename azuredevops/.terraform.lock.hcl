@@ -10,7 +10,8 @@ provider "registry.terraform.io/hashicorp/aws" {
 }
 
 provider "registry.terraform.io/hashicorp/time" {
-  version = "0.7.2"
+  version     = "0.7.2"
+  constraints = "~> 0.7.0"
   hashes = [
     "h1:NKy1QrNLlP5mKy5Tea6lQSRsVoyydJQKh6WvNTdBF4I=",
   ]
@@ -18,7 +19,7 @@ provider "registry.terraform.io/hashicorp/time" {
 
 provider "registry.terraform.io/microsoft/azuredevops" {
   version     = "0.1.8"
-  constraints = "0.1.8"
+  constraints = ">= 0.1.8, 0.1.8"
   hashes = [
     "h1:Z3IOlEl90Y0b4BU1mgkjeK/tVg6a5NJoIJvB0/6FO0k=",
   ]
