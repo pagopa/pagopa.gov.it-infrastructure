@@ -1,15 +1,7 @@
 terraform {
   required_version = ">= 1.0.0"
 
-  backend "remote" {
-    hostname     = "app.terraform.io"
-    organization = "PagoPa"
-
-    workspaces {
-      prefix = "pagopa-gov-it-"
-    }
-  }
-
+  backend "s3" {}
 
   required_providers {
     aws = {
@@ -29,14 +21,12 @@ provider "aws" {
 }
 
 data "terraform_remote_state" "shared" {
-  backend = "remote"
+  backend = "s3"
 
   config = {
-    hostname     = "app.terraform.io"
-    organization = "PagoPa"
-    workspaces = {
-      name = "pagopa-gov-it-shared"
-    }
+    bucket = "terraform-backend-3605"
+    key    = "prod/shared/tfstate"
+    region = "eu-south-1"
   }
 }
 
