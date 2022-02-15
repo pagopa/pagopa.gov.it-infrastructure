@@ -53,3 +53,23 @@ resource "aws_dynamodb_table" "dynamodb-terraform-state-lock" {
   })
 
 }
+
+## IAM user who can manage the infrastructure definition
+
+resource "aws_iam_group" "admin" {
+  name = "Admins"
+}
+
+resource "aws_iam_user" "iac" {
+  name = "iac"
+
+  tags = var.tags
+}
+
+resource "aws_iam_user_group_membership" "iac" {
+  user = aws_iam_user.iac.name
+
+  groups = [
+    aws_iam_group.admin.name,
+  ]
+}
