@@ -6,7 +6,8 @@ locals {
   tags = merge(var.tags, {
     Environment : var.environment,
     Owner : "PagoPa",
-    Source : "https://github.com/uolter/terraform-aws-example.git"
+    Source : "https://github.com/pagopa/pagopa.gov.it-infrastructure.git",
+    Scope : "tfstate",
   })
 }
 
