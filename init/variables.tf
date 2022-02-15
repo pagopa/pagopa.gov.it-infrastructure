@@ -15,6 +15,6 @@ variable "tags" {
   type = map(any)
   default = {
     "CreatedBy" : "Terraform",
-    "Environment" : "Dev"
+    "Environment" : "Prod"
   }
 }
