@@ -4,6 +4,7 @@ resource "aws_cloudfront_origin_access_identity" "access_identity" {
   comment = "Restrict access to cloud front"
 }
 
+/*
 resource "aws_cloudfront_response_headers_policy" "cors" {
   name    = "cors-policy"
   comment = "test comment"
@@ -23,7 +24,7 @@ resource "aws_cloudfront_response_headers_policy" "cors" {
     origin_override = true
   }
 }
-
+*/
 resource "aws_cloudfront_distribution" "static_bucket_distribution" {
   origin {
 
