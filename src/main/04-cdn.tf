@@ -13,7 +13,7 @@ resource "aws_cloudfront_response_headers_policy" "cors" {
     access_control_allow_credentials = true
 
     access_control_allow_headers {
-      items = []
+      items = ["*"]
     }
 
 
