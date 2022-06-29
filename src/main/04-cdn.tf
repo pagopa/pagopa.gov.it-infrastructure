@@ -4,6 +4,26 @@ resource "aws_cloudfront_origin_access_identity" "access_identity" {
   comment = "Restrict access to cloud front"
 }
 
+resource "aws_cloudfront_response_headers_policy" "cors" {
+  name    = "cors-policy"
+  comment = "test comment"
+
+  cors_config {
+    access_control_allow_credentials = true
+
+
+    access_control_allow_methods {
+      items = ["GET"]
+    }
+
+    access_control_allow_origins {
+      items = ["*.pagopa.it"]
+    }
+
+    origin_override = true
+  }
+}
+
 resource "aws_cloudfront_distribution" "static_bucket_distribution" {
   origin {
 
@@ -36,6 +56,8 @@ resource "aws_cloudfront_distribution" "static_bucket_distribution" {
         forward = "none"
       }
     }
+
+    response_headers_policy_id = aws_cloudfront_response_headers_policy.cors.id
   }
 
   aliases = [format("www.%s", replace(var.domain_name, "-", "."))]
@@ -54,3 +76,4 @@ resource "aws_cloudfront_distribution" "static_bucket_distribution" {
   tags = var.tags
 
 }
+
