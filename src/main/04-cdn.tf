@@ -18,7 +18,7 @@ resource "aws_cloudfront_response_headers_policy" "cors" {
 
 
     access_control_allow_methods {
-      items = ["GET"]
+      items = ["GET", "HEAD"]
     }
 
     access_control_allow_origins {
