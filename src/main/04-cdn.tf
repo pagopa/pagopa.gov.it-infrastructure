@@ -57,7 +57,6 @@ resource "aws_cloudfront_distribution" "static_bucket_distribution" {
       }
     }
 
-    response_headers_policy_id = aws_cloudfront_response_headers_policy.cors.id
   }
 
   aliases = [format("www.%s", replace(var.domain_name, "-", "."))]
