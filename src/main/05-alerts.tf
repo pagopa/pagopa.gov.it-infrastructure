@@ -7,13 +7,13 @@ data "aws_secretsmanager_secret_version" "io_operation_lt" {
 }
 
 resource "aws_sns_topic" "alarms" {
-  provider     = aws.us-east-1
+  # provider     = aws.us-east-1
   name         = "alarms"
   display_name = "alarms"
 }
 
 resource "aws_sns_topic_subscription" "alarms_email" {
-  provider = aws.us-east-1
+  # provider = aws.us-east-1
   endpoint = jsondecode(data.aws_secretsmanager_secret_version.io_operation_lt.secret_string)["email"]
 
   endpoint_auto_confirms = true
@@ -23,7 +23,7 @@ resource "aws_sns_topic_subscription" "alarms_email" {
 
 
 resource "aws_cloudwatch_metric_alarm" "cdn_error_rate" {
-  provider            = aws.us-east-1
+  # provider            = aws.us-east-1
   alarm_name          = "cdn_error_rate"
   comparison_operator = "GreaterThanOrEqualToThreshold"
   evaluation_periods  = "1"
