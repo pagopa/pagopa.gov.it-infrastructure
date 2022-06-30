@@ -13,7 +13,7 @@ resource "aws_s3_bucket" "static_bucket" {
 
   cors_rule {
     allowed_methods = ["GET", "HEAD"]
-    allowed_origins = ["*.pagopa.it"]
+    allowed_origins = var.access_control_allow_origins
     max_age_seconds = 3000
   }
 

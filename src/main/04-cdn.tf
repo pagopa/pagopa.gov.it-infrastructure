@@ -22,7 +22,7 @@ resource "aws_cloudfront_response_headers_policy" "cors" {
     }
 
     access_control_allow_origins {
-      items = ["*.pagopa.it", "pagopa.it"]
+      items = var.access_control_allow_origins
     }
 
     origin_override = true
