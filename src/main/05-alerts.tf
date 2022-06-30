@@ -6,13 +6,15 @@ data "aws_secretsmanager_secret_version" "io_operation_lt" {
   secret_id = data.aws_secretsmanager_secret.io_operation.id
 }
 
-/*
+
 resource "aws_sns_topic" "alarms" {
+  provider     = aws.us-east-1
   name         = "alarms"
   display_name = "alarms"
 }
 
 resource "aws_sns_topic_subscription" "alarms_email" {
+  provider               = aws.us-east-1
   endpoint               = jsondecode(data.aws_secretsmanager_secret_version.io_operation_lt.secret_string)["email"]
   endpoint_auto_confirms = true
   protocol               = "email"
@@ -40,4 +42,3 @@ resource "aws_cloudwatch_metric_alarm" "cdn_error_rate" {
     Region         = "Global"
   }
 }
-*/
