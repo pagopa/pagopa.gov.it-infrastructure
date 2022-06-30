@@ -8,7 +8,6 @@ data "aws_secretsmanager_secret_version" "io_operation_lt" {
 
 
 resource "aws_sns_topic" "alarms" {
-  provider     = aws.us-east-1
   name         = "alarms"
   display_name = "alarms"
 }
