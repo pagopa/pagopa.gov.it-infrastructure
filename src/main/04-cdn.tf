@@ -4,6 +4,31 @@ resource "aws_cloudfront_origin_access_identity" "access_identity" {
   comment = "Restrict access to cloud front"
 }
 
+
+resource "aws_cloudfront_response_headers_policy" "cors" {
+  name    = "cors-policy"
+  comment = "test comment"
+
+  cors_config {
+    access_control_allow_credentials = false
+
+    access_control_allow_headers {
+      items = ["*"]
+    }
+
+
+    access_control_allow_methods {
+      items = ["GET", "HEAD"]
+    }
+
+    access_control_allow_origins {
+      items = var.access_control_allow_origins
+    }
+
+    origin_override = true
+  }
+}
+
 resource "aws_cloudfront_distribution" "static_bucket_distribution" {
   origin {
 
@@ -21,14 +46,15 @@ resource "aws_cloudfront_distribution" "static_bucket_distribution" {
   default_root_object = "index.html"
 
   default_cache_behavior {
-    viewer_protocol_policy = "redirect-to-https"
-    compress               = true
-    allowed_methods        = ["GET", "HEAD"]
-    cached_methods         = ["GET", "HEAD"]
-    target_origin_id       = var.domain_name
-    min_ttl                = 0
-    default_ttl            = 86400
-    max_ttl                = 31536000
+    viewer_protocol_policy     = "redirect-to-https"
+    compress                   = true
+    allowed_methods            = ["GET", "HEAD"]
+    cached_methods             = ["GET", "HEAD"]
+    target_origin_id           = var.domain_name
+    min_ttl                    = 0
+    default_ttl                = 86400
+    max_ttl                    = 31536000
+    response_headers_policy_id = aws_cloudfront_response_headers_policy.cors.id
 
     forwarded_values {
       query_string = false
@@ -36,6 +62,7 @@ resource "aws_cloudfront_distribution" "static_bucket_distribution" {
         forward = "none"
       }
     }
+
   }
 
   aliases = [format("www.%s", replace(var.domain_name, "-", "."))]
@@ -54,3 +81,4 @@ resource "aws_cloudfront_distribution" "static_bucket_distribution" {
   tags = var.tags
 
 }
+
