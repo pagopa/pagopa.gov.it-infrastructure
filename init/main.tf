@@ -53,3 +53,37 @@ resource "aws_dynamodb_table" "dynamodb-terraform-state-lock" {
   })
 
 }
+
+## IAM user who can manage the infrastructure definition
+resource "aws_iam_group" "admins" {
+  name = "Admins"
+}
+
+
+data "aws_iam_policy" "admin_access" {
+  name = "AdministratorAccess"
+}
+
+resource "aws_iam_group_policy_attachment" "admins" {
+  group      = aws_iam_group.admins.name
+  policy_arn = data.aws_iam_policy.admin_access.arn
+}
+
+resource "aws_iam_user" "iac" {
+  name = "iac"
+
+  tags = var.tags
+}
+
+resource "aws_iam_access_key" "iac" {
+  user = aws_iam_user.iac.name
+}
+
+## TODO: check whether it's possibile to assign less power
+resource "aws_iam_user_group_membership" "iac" {
+  user = aws_iam_user.iac.name
+
+  groups = [
+    aws_iam_group.admins.name,
+  ]
+}
