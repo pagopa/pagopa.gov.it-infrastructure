@@ -33,6 +33,8 @@
 | [aws_globalaccelerator_accelerator.alb_ga](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/globalaccelerator_accelerator) | resource |
 | [aws_globalaccelerator_endpoint_group.alb_ga_endpoint](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/globalaccelerator_endpoint_group) | resource |
 | [aws_globalaccelerator_listener.alb_ga_listener](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/globalaccelerator_listener) | resource |
+| [aws_iam_policy.githubdeploys3](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
+| [aws_iam_role_policy_attachment.github_deploy_s3](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
 | [aws_iam_user_policy.circle_ci_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_user_policy) | resource |
 | [aws_lb.fe_alb](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lb) | resource |
 | [aws_s3_bucket.static_bucket](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket) | resource |
@@ -68,6 +70,8 @@
 | <a name="output_csm_cert_nacked_name"></a> [csm\_cert\_nacked\_name](#output\_csm\_cert\_nacked\_name) | n/a |
 | <a name="output_csm_cert_www_name"></a> [csm\_cert\_www\_name](#output\_csm\_cert\_www\_name) | n/a |
 | <a name="output_global_accelerator_addresses"></a> [global\_accelerator\_addresses](#output\_global\_accelerator\_addresses) | n/a |
+| <a name="output_iam_role_deploy_arn"></a> [iam\_role\_deploy\_arn](#output\_iam\_role\_deploy\_arn) | n/a |
+| <a name="output_iam_role_deploy_name"></a> [iam\_role\_deploy\_name](#output\_iam\_role\_deploy\_name) | n/a |
 | <a name="output_static_bucket_arn"></a> [static\_bucket\_arn](#output\_static\_bucket\_arn) | n/a |
 | <a name="output_static_bucket_regional_domain_name"></a> [static\_bucket\_regional\_domain\_name](#output\_static\_bucket\_regional\_domain\_name) | n/a |
 | <a name="output_static_bucket_website_domain"></a> [static\_bucket\_website\_domain](#output\_static\_bucket\_website\_domain) | n/a |
