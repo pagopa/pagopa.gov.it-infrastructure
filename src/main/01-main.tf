@@ -57,28 +57,7 @@ resource "aws_acm_certificate" "www_static_bucket_certificate" {
   tags = var.tags
 }
 
-# TODO remove this policy once migrated to github actions.
 
-resource "aws_iam_user_policy" "circle_ci_policy" {
-  name = format("circle-ci-policy-s3-%s", var.domain_name)
-  user = data.terraform_remote_state.shared.outputs.circle_ci_user_name
-
-  policy = <<-EOT
-    {
-      "Version": "2012-10-17",
-      "Statement": [
-          {
-              "Effect": "Allow",
-              "Action": "s3:*",
-              "Resource": [
-                  "arn:aws:s3:::${var.domain_name}",
-                  "arn:aws:s3:::${var.domain_name}/*"
-              ]
-          }      
-      ]
-    }
-  EOT
-}
 
 resource "aws_iam_policy" "githubdeploys3" {
   name        = "GitHubDeployS3"

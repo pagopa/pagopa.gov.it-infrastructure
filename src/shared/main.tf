@@ -18,43 +18,6 @@ provider "aws" {
 
 data "aws_caller_identity" "current" {}
 
-
-# TODO: remove once we migrate to gitbhub actions
-resource "aws_iam_user" "circle_ci_user" {
-  name = "circle-ci"
-
-  tags = var.tags
-}
-
-# TODO: remove once we migrate to gitbhub actions
-resource "aws_iam_access_key" "circle_ci_access_key" {
-  user = aws_iam_user.circle_ci_user.name
-}
-
-/*
-The cloudfront:CreateInvalidation command does not support resource-level permissions. For this reason, only * is supported. Thus, it is not possible to restrict a user/role to only be able to invalidate a specific distribution.
-Source: http://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/cf-api-permissions-ref.html
-*/
-
-# TODO: remove once we migrate to gitbhub actions
-resource "aws_iam_user_policy" "circle_ci_policy" {
-  name = "circle-ci-policy-cdn"
-  user = aws_iam_user.circle_ci_user.name
-
-  policy = <<-EOT
-    {
-      "Version": "2012-10-17",
-      "Statement": [
-          {
-              "Action": "cloudfront:CreateInvalidation",
-              "Effect": "Allow",
-              "Resource": "*"
-          }
-      ]
-    }
-  EOT
-}
-
 # Budget alert
 
 data "aws_secretsmanager_secret" "slack_io_status" {
@@ -106,7 +69,7 @@ resource "aws_iam_role" "githubdeploy" {
         Action = "sts:AssumeRoleWithWebIdentity",
         Condition = {
           StringLike = {
-            "token.actions.githubusercontent.com:sub" : "repo:${var.github_repository}:*"
+            "token.actions.githubusercontent.com:sub" : "repo:${var.github_website_repository}:*"
           },
           "ForAllValues:StringEquals" = {
             "token.actions.githubusercontent.com:iss" : "https://token.actions.githubusercontent.com",
@@ -139,4 +102,42 @@ resource "aws_iam_policy" "cleancdncache" {
 resource "aws_iam_role_policy_attachment" "test-attach" {
   role       = aws_iam_role.githubdeploy.name
   policy_arn = aws_iam_policy.cleancdncache.arn
+}
+
+resource "aws_iam_role" "githubiac" {
+  name        = "GitHubActionIAC"
+  description = "Role to assume to deploy the static website"
+
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow",
+        Principal = {
+          "Federated" : "arn:aws:iam::${data.aws_caller_identity.current.account_id}:oidc-provider/token.actions.githubusercontent.com"
+        },
+        Action = "sts:AssumeRoleWithWebIdentity",
+        Condition = {
+          StringLike = {
+            "token.actions.githubusercontent.com:sub" : "repo:${var.github_infra_repository}:*"
+          },
+          "ForAllValues:StringEquals" = {
+            "token.actions.githubusercontent.com:iss" : "https://token.actions.githubusercontent.com",
+            "token.actions.githubusercontent.com:aud" : "sts.amazonaws.com"
+          }
+        }
+      }
+    ]
+  })
+}
+
+data "aws_iam_policy" "admin_access" {
+  name = "AdministratorAccess"
+}
+
+
+resource "aws_iam_role_policy_attachment" "githubiac" {
+  role       = aws_iam_role.githubiac.name
+  policy_arn = data.aws_iam_policy.admin_access.arn
 }
