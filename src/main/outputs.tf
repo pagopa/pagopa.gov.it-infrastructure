@@ -51,3 +51,11 @@ output "global_accelerator_addresses" {
 output "alb_" {
   value = aws_lb.fe_alb.dns_name
 }
+
+output "iam_role_deploy_arn" {
+  value = data.terraform_remote_state.shared.outputs.iam_role_deploy_arn
+}
+
+output "iam_role_deploy_name" {
+  value = data.terraform_remote_state.shared.outputs.iam_role_deploy_name
+}
